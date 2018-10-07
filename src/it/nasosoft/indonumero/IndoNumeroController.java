@@ -78,6 +78,11 @@ public class IndoNumeroController {
     	try   	{
     			int num = Integer.parseInt(numS);
     			// il numero è intero
+    			if(num<1||num>NMAX)
+    			{
+    				txtLog.appendText("Varore fuori range\n");
+    				return;
+    			}
     			if(num==this.segreto)
     			{
     				txtLog.appendText("complimenti hai indovinato !\n");
