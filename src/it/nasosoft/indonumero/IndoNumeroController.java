@@ -14,6 +14,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
 public class IndoNumeroController {
+	
+	private int NMAX = 100;
+	private int TMAX = 7;
+	private int segreto; //numero da indovinare
+	private int tentativi; // tentativi già fatti
+	private boolean inGame = false;
+	
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -41,12 +48,80 @@ public class IndoNumeroController {
 
     @FXML
     void handleNuova(ActionEvent event) {
+    	
+    	this.segreto = (int) (Math.random()*NMAX)+1;
+    	this.tentativi=0;
+    	this.inGame= true;
+    	
+    	btnNuova.setDisable(true);
+    	boxGioco.setDisable(false);
+    	txtCurrent.setText(String.format("%d",this.tentativi));
+    	txtMax.setText(String.format("%d",this.TMAX));
+    	txtLog.clear();
+    	txtTentativo.clear();
+    	txtLog.appendText(String.format("inserisci un numero tra %d e %d\n", 1,NMAX));
+    	
 
     }
 
     @FXML
-    void handleProva(ActionEvent event) {
-
+    void handleProva(ActionEvent event)
+    {
+    	
+    	String numS = txtTentativo.getText();
+    	if (numS.length()==0) 
+    		{
+    		txtLog.appendText("devi inserire un numero\n");
+    		return ;
+    		}
+    	
+    	try   	{
+    			int num = Integer.parseInt(numS);
+    			// il numero è intero
+    			if(num==this.segreto)
+    			{
+    				txtLog.appendText("complimenti hai indovinato !\n");
+    				btnNuova.setDisable(false);
+    		    	boxGioco.setDisable(true);
+    		    	this.inGame= false;
+    			} else 
+    				{
+    				 this.tentativi++;// incrementiamo il numero di tentativi
+    				 txtCurrent.setText(String.format("%d",this.tentativi));
+    				 if (this.tentativi==this.TMAX) 
+    				 {
+    					 //txtLog.appendText("hai perso");
+    					 //hai perso numero tentativi raggiunto
+    					 txtLog.appendText(
+    							 String.format("hai perso! il numero era: %d\n",
+    									 this.segreto));
+    					 // chiudo la partita
+    					 btnNuova.setDisable(false);
+    	    		     boxGioco.setDisable(true);
+    	    		     this.inGame= false;
+    					 
+    				 } else 
+    				 {
+    					 // sei ancora in gioco
+    					 if (num<segreto)
+    					 {
+    						txtLog.appendText("troppo basso\n"); //troppo basso
+    						
+    					 }else
+    					 {
+    						 txtLog.appendText("troppo alto\n");//troppo alto
+    					 }
+    				 }
+    				 
+    				}
+    			
+    			}
+    	catch (NumberFormatException ex)   
+    			{
+				// non è un numero intero
+    			txtLog.appendText("il dato inserito non è numerico\n");
+    			return;
+    			}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
